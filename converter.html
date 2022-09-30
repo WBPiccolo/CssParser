@@ -1,0 +1,127 @@
+<script>
+    const colorMap = {
+        '#fff6d3': 'map-get($bper-warning, --warning-20)',
+        '#f1de88': 'map-get($bper-warning, --warning-30)',
+        '#e8c42a': 'map-get($bper-warning, --warning-50)',
+        '#e8a62a': 'map-get($bper-warning, --warning-70)',
+        '#d98600': 'map-get($bper-warning, --warning-100)',
+        '#f6e8e8': 'map-get($bper-error, --error-20)',
+        '#eac9c9': 'map-get($bper-error, --error-40)',
+        '#d18888': 'map-get($bper-error, --error-80)',
+        '#b74444': 'map-get($bper-error, --error-300)',
+        '#f6e8e8': 'map-get($bper-error, --error-700)',
+        '#7b0000': 'map-get($bper-error, --error-800)',
+        '#fbede4': 'map-get($bper-palette, accent, --accent-20)',
+        '#f5d1b8': 'map-get($bper-palette, accent, --accent-30)',
+        '#f1bb95': 'map-get($bper-palette, accent, --accent-50)',
+        '#eca675': 'map-get($bper-palette, accent, --accent-60)',
+        '#e88f50': 'map-get($bper-palette, accent, --accent-70)',
+        '#e37222': 'map-get($bper-palette, accent, --accent-90)',
+        '#d04900': 'map-get($bper-palette, accent, --accent-100)',
+        '#e1eded': 'map-get($bper-palette, primary, --primary-20)',
+        '#b0cfd1': 'map-get($bper-palette, primary, --primary-40)',
+        '#88b8ba': 'map-get($bper-palette, primary, --primary-60)',
+        '#63a1a4': 'map-get($bper-palette, primary, --primary-80)',
+        '#3a888c': 'map-get($bper-palette, primary, --primary-100)',
+        '#05696f': 'map-get($bper-palette, primary, --primary-400)',
+        '#005157': 'map-get($bper-palette, primary, --primary-500)',
+        '#043f42': 'map-get($bper-palette, primary, --primary-600)',
+        '#dff5ec': 'map-get($bper-palette, secondary, --secondary-10)',
+        '#caf0de': 'map-get($bper-palette, secondary, --secondary-20)',
+        '#ade5ce': 'map-get($bper-palette, secondary, --secondary-30)',
+        '#77dab3': 'map-get($bper-palette, secondary, --secondary-50)',
+        '#60cc9f': 'map-get($bper-palette, secondary, --secondary-60)',
+        '#51bd8e': 'map-get($bper-palette, secondary, --secondary-70)',
+        '#00ae65': 'map-get($bper-palette, secondary, --secondary-90)',
+        '#00845b': 'map-get($bper-palette, secondary, --secondary-200)',
+        '#f7fafa': 'map-get($bper-palette, neutral, --neutral-5)',
+        '#edf0f0': 'map-get($bper-palette, neutral, --neutral-10)',
+        '#e6e8e8': 'map-get($bper-palette, neutral, --neutral-20)',
+        '#d7dbdb': 'map-get($bper-palette, neutral, --neutral-30)',
+        '#cbd1d1': 'map-get($bper-palette, neutral, --neutral-40)',
+        '#bcc4c4': 'map-get($bper-palette, neutral, --neutral-50)',
+        '#acb5b5': 'map-get($bper-palette, neutral, --neutral-60)',
+        '#98a2a3': 'map-get($bper-palette, neutral, --neutral-90)',
+        '#7e8c8d': 'map-get($bper-palette, neutral, --neutral-100)',
+        '#5d6f70': 'map-get($bper-palette, neutral, --neutral-300)',
+        '#344243': 'map-get($bper-palette, neutral, --neutral-700)',
+        '#071d1f': 'map-get($bper-palette, --black)',
+        '#ffffff': 'map-get($bper-palette, --white)',
+        '#000000': 'map-get($bper-palette, --unnamed-color-000000)',
+        '#141515': 'map-get($bper-palette, --unnamed-color-141515)',
+    };
+
+    function parseCss() {
+        console.log('parseCSS');
+        const textAreaValue = document.getElementById('inputCss').value;
+        const lines = textAreaValue.split(';');
+
+        let parsedLines = '';
+        lines.forEach(element => {
+            if (element) {
+                parsedLines += `${parseCssLine(element.trim())}\n`;
+            }
+        });
+        console.log(parsedLines);
+
+        document.getElementById('output').value = parsedLines;
+    }
+
+    function parseCssLine(line) {
+        let parsedCSS = line;
+        if (line.startsWith('font:')) {
+            parsedCSS = parseCssFontProperty(line);
+        }
+        if (line.indexOf('#') > -1) {
+            parsedCSS = mapColours(line);
+        }
+        return parsedCSS;
+    }
+
+    function parseCssFontProperty(line) {
+        //font: normal normal normal 14px/20px Kievit Pro;
+        //font-style,font-variant,font-weight,font-size/line-height,font-family
+        const splittedLine = line.trim().split(' ');
+        const fontStyle = splittedLine[1];
+        const fontVariant = splittedLine[2];
+        const fontWeight = splittedLine[3];
+        const fontSize = splittedLine[4].split('/')[0];
+        const lineHeight = splittedLine[4].split('/')[1] || splittedLine[4].split('/')[0];
+        const fontFamily = splittedLine.splice(5).join(' ');
+        const property = `font-style: ${fontStyle};\nfont-variant: ${fontVariant};\nfont-weight: ${fontWeight};\nfont-size: ${fontSize};\nline-height: ${lineHeight};\nfont-family: '${fontFamily}';\n`;
+        return property;
+    }
+
+    function mapColours(line) {
+        //Controllo se c'è ^#(?:[0-9a-fA-F]{3}){1,2}$
+        const colorIndex = line.indexOf('#');
+        if (colorIndex < 0) {
+            return;
+        }
+        const hex = line.substring(colorIndex, colorIndex + 7);
+        console.log('colore:', hex);
+        console.log(colorMap[hex]);
+        const color = colorMap[hex];
+        return color ? line.replace(hex, color)+';' : null;
+    }
+</script>
+
+<html>
+
+<head>
+    <title>Css semplifyier</title>
+</head>
+
+<body>
+    <div class="main-div">
+        <label for="inputCss">inputCss</label>
+        <textarea id="inputCss" name="inputCss" rows="20" cols="80"
+            placeholder="box-shadow: 0px 12px 24px #E3722229; border: 1px solid #FBEDE4;" onchange="parseCss()">
+        </textarea>
+
+        <textarea id="output" name="output" rows="20" cols="80" readonly>
+    </textarea>
+    </div>
+</body>
+
+</html>

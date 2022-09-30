@@ -1,0 +1,41 @@
+<script>
+    function parseIds() {
+        console.log('parseIds');
+        const textAreaValue = document.getElementById('inputCss').value;
+        const lines = textAreaValue.split('\n');
+        console.log(lines)
+        let parsedLines = '';
+        lines.forEach(line => {
+            if (line) {
+                const idName = line.trim().toUpperCase().replaceAll(' ', '_').replaceAll(':', '_');
+                parsedLines += (`${idName} = "${line.trim()}",\n`);
+            }
+        })
+        document.getElementById('output').value = parsedLines;
+        //  POSIZIONE_FISCALE_INFORMATIVA = "investimenti:posizione fiscale:informativa"
+
+    }
+
+
+
+</script>
+
+<html>
+
+<head>
+    <title>tealium ids</title>
+</head>
+
+<body>
+    <div class="main-div">
+        <label for="inputCss">tealium ids</label>
+        <textarea id="inputCss" name="inputCss" rows="20" cols="80"
+            placeholder="investimenti:deposito titoli:dettagli singolo titolo" onchange="parseIds()">
+        </textarea>
+
+        <textarea id="output" name="output" rows="20" cols="80" readonly>
+    </textarea>
+    </div>
+</body>
+
+</html>
